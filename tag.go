@@ -20,14 +20,14 @@ type TagLoader struct {
 }
 
 func (t *TagLoader) Load(s interface{}) error {
-	_, ok := s.(map[string]interface{})
-	if ok {
+	v := reflect.ValueOf(s)
+	switch v.Kind() {
+	case reflect.Map:
 		return nonPointerError
-	}
-
-	_, ok = s.(*map[string]interface{})
-	if ok {
-		return nil //abort if interface is a map
+	case reflect.Ptr:
+		if v.Elem().Kind() == reflect.Map {
+			return nil // abort if source is a *map[string]interface{}
+		}
 	}
 
 	if t.DefaultTagName == "" {

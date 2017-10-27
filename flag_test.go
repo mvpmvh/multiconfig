@@ -11,6 +11,8 @@ import (
 
 func TestFlagLoad(t *testing.T) {
 	t.Run("flag loader should not return an error for a map source", loadFlagMapSource)
+	t.Run("flag loader should not return an error for underlying pointer type map source", loadFlagUnderlyingPointerMapSource)
+	t.Run("flag loader should return an error for underlying type map source", loadFlagUnderlyingMapSource)
 	t.Run("flag loader should return nonPointerError for non-pointer source", testFlagNonPointerError)
 }
 
@@ -23,6 +25,28 @@ func loadFlagMapSource(t *testing.T) {
 	err := l.Load(&s)
 	if err != nil {
 		t.Error(err)
+	}
+}
+
+func loadFlagUnderlyingPointerMapSource(t *testing.T) {
+	type underlyingMap map[string]interface{}
+	var u underlyingMap
+
+	l := &FlagLoader{}
+	err := l.Load(&u)
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func loadFlagUnderlyingMapSource(t *testing.T) {
+	type underlyingMap map[string]interface{}
+	var u underlyingMap
+
+	l := &FlagLoader{}
+	err := l.Load(u)
+	if err != nonPointerError {
+		t.Error("expected nonPointerError")
 	}
 }
 

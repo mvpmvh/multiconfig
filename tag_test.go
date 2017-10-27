@@ -4,7 +4,31 @@ import "testing"
 
 func TestTagLoad(t *testing.T) {
 	t.Run("tag loader should not return an error for a map source", loadTagMapSource)
+	t.Run("tag loader should not return an error for underlying pointer type map source", loadTagUnderlyingPointerMapSource)
+	t.Run("tag loader should return an error for underlying type map source", loadTagUnderlyingMapSource)
 	t.Run("tag loader should return nonPointerError for non-pointer source", testTagNonPointerError)
+}
+
+func loadTagUnderlyingPointerMapSource(t *testing.T) {
+	type underlyingMap map[string]interface{}
+	var u underlyingMap
+
+	l := &TagLoader{}
+	err := l.Load(&u)
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func loadTagUnderlyingMapSource(t *testing.T) {
+	type underlyingMap map[string]interface{}
+	var u underlyingMap
+
+	l := &TagLoader{}
+	err := l.Load(u)
+	if err != nonPointerError {
+		t.Error("expected nonPointerError")
+	}
 }
 
 func loadTagMapSource(t *testing.T) {

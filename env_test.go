@@ -10,6 +10,8 @@ import (
 
 func TestEnvironmentLoader_Load(t *testing.T) {
 	t.Run("environment loader should not return errors for map source", testLoadEnvMapSource)
+	t.Run("environment loader should not return an error for underlying pointer type map source", loadEnvUnderlyingPointerMapSource)
+	t.Run("environment loader should return an error for underlying type map source", loadEnvUnderlyingMapSource)
 	t.Run("environment loader should return nonPointerError for non-pointer source", testEnvNonPointerError)
 }
 
@@ -22,6 +24,28 @@ func testLoadEnvMapSource(t *testing.T) {
 	err := l.Load(&s)
 	if err != nil {
 		t.Error(err)
+	}
+}
+
+func loadEnvUnderlyingPointerMapSource(t *testing.T) {
+	type underlyingMap map[string]interface{}
+	var u underlyingMap
+
+	l := &EnvironmentLoader{}
+	err := l.Load(&u)
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func loadEnvUnderlyingMapSource(t *testing.T) {
+	type underlyingMap map[string]interface{}
+	var u underlyingMap
+
+	l := &EnvironmentLoader{}
+	err := l.Load(u)
+	if err != nonPointerError {
+		t.Error("expected nonPointerError")
 	}
 }
 

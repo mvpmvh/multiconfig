@@ -7,6 +7,8 @@ import (
 
 func TestFileLoad(t *testing.T) {
 	t.Run("file loader should not return an error for a map source", loadFileMapSource)
+	t.Run("file loader should not return an error for underlying pointer type map source", loadTagUnderlyingPointerMapSource)
+	t.Run("file loader should return an error for underlying type map source", loadTagUnderlyingMapSource)
 	t.Run("file loader should return nonPointerError for non-pointer source", testFileNonPointerError)
 }
 
@@ -25,6 +27,42 @@ func loadFileMapSource(t *testing.T) {
 		err := l.Load(&s)
 		if err != nil {
 			t.Error(err)
+		}
+	}
+}
+
+func loaFileUnderlyingPointerMapSource(t *testing.T) {
+	type underlyingMap map[string]interface{}
+	var u underlyingMap
+
+	loaders := []Loader{
+		&JSONLoader{},
+		&TOMLLoader{},
+		&YAMLLoader{},
+	}
+
+	for _, l := range loaders {
+		err := l.Load(&u)
+		if err != nil {
+			t.Error(err)
+		}
+	}
+}
+
+func loadFileUnderlyingMapSource(t *testing.T) {
+	type underlyingMap map[string]interface{}
+	var u underlyingMap
+
+	loaders := []Loader{
+		&JSONLoader{},
+		&TOMLLoader{},
+		&YAMLLoader{},
+	}
+
+	for _, l := range loaders {
+		err := l.Load(&u)
+		if err != nonPointerError {
+			t.Error("expected nonPointerError")
 		}
 	}
 }

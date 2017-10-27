@@ -8,6 +8,7 @@ import (
 
 	"github.com/fatih/camelcase"
 	"github.com/fatih/structs"
+	"reflect"
 )
 
 // EnvironmentLoader satisifies the loader interface. It loads the
@@ -35,14 +36,14 @@ func (e *EnvironmentLoader) getPrefix(s *structs.Struct) string {
 
 // Load loads the source into the config defined by struct s
 func (e *EnvironmentLoader) Load(s interface{}) error {
-	_, ok := s.(map[string]interface{})
-	if ok {
+	v := reflect.ValueOf(s)
+	switch v.Kind() {
+	case reflect.Map:
 		return nonPointerError
-	}
-
-	_, ok = s.(*map[string]interface{})
-	if ok {
-		return nil //abort if interface is a map
+	case reflect.Ptr:
+		if v.Elem().Kind() == reflect.Map {
+			return nil // abort if source is a *map[string]interface{}
+		}
 	}
 
 	strct := structs.New(s)
