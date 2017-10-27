@@ -1,6 +1,10 @@
 package multiconfig
 
+import "errors"
+
 type multiLoader []Loader
+
+var nonPointerError = errors.New("source must be a pointer to map or struct")
 
 // MultiLoader creates a loader that executes the loaders one by one in order
 // and returns on the first error.

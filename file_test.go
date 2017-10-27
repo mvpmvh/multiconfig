@@ -5,6 +5,58 @@ import (
 	"testing"
 )
 
+func TestFileLoad(t *testing.T) {
+	t.Run("file loader should not return an error for a map source", loadFileMapSource)
+	t.Run("file loader should return nonPointerError for non-pointer source", testFileNonPointerError)
+}
+
+func loadFileMapSource(t *testing.T) {
+	loaders := []Loader{
+		&JSONLoader{},
+		&TOMLLoader{},
+		&YAMLLoader{},
+	}
+
+	for _, l := range loaders {
+		s := map[string]interface{}{
+			"foo": "foo",
+		}
+
+		err := l.Load(&s)
+		if err != nil {
+			t.Error(err)
+		}
+	}
+}
+
+func testFileNonPointerError(t *testing.T) {
+	loaders := []Loader{
+		&JSONLoader{},
+		&TOMLLoader{},
+		&YAMLLoader{},
+	}
+
+	for _, l := range loaders {
+		s := map[string]interface{}{
+			"foo": "foo",
+		}
+
+		err := l.Load(s)
+		if err == nil {
+			t.Error("expected nonPointerError")
+		}
+	}
+
+	//s2 := struct {
+	//	Foo string
+	//}{"foo"}
+	//
+	//err = l.Load(s2)
+	//if err == nil {
+	//	t.Error("expected nonPointerError")
+	//}
+}
+
 func TestYAML(t *testing.T) {
 	m := NewWithPath(testYAML)
 

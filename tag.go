@@ -20,6 +20,16 @@ type TagLoader struct {
 }
 
 func (t *TagLoader) Load(s interface{}) error {
+	_, ok := s.(map[string]interface{})
+	if ok {
+		return nonPointerError
+	}
+
+	_, ok = s.(*map[string]interface{})
+	if ok {
+		return nil //abort if interface is a map
+	}
+
 	if t.DefaultTagName == "" {
 		t.DefaultTagName = "default"
 	}

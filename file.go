@@ -31,6 +31,15 @@ type TOMLLoader struct {
 // Defaults to using the Reader if provided, otherwise tries to read from the
 // file
 func (t *TOMLLoader) Load(s interface{}) error {
+	_, ok := s.(map[string]interface{})
+	if ok {
+		return nonPointerError
+	}
+	_, ok = s.(*map[string]interface{})
+	if ok {
+		return nil //abort if interface is a map
+	}
+
 	var r io.Reader
 
 	if t.Reader != nil {
@@ -64,6 +73,16 @@ type JSONLoader struct {
 // Defaults to using the Reader if provided, otherwise tries to read from the
 // file
 func (j *JSONLoader) Load(s interface{}) error {
+	_, ok := s.(map[string]interface{})
+	if ok {
+		return nonPointerError
+	}
+
+	_, ok = s.(*map[string]interface{})
+	if ok {
+		return nil //abort if interface is a map
+	}
+
 	var r io.Reader
 	if j.Reader != nil {
 		r = j.Reader
@@ -92,6 +111,16 @@ type YAMLLoader struct {
 // Defaults to using the Reader if provided, otherwise tries to read from the
 // file
 func (y *YAMLLoader) Load(s interface{}) error {
+	_, ok := s.(map[string]interface{})
+	if ok {
+		return nonPointerError
+	}
+
+	_, ok = s.(*map[string]interface{})
+	if ok {
+		return nil //abort if interface is a map
+	}
+
 	var r io.Reader
 
 	if y.Reader != nil {

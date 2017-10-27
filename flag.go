@@ -58,6 +58,16 @@ type FlagLoader struct {
 
 // Load loads the source into the config defined by struct s
 func (f *FlagLoader) Load(s interface{}) error {
+	_, ok := s.(map[string]interface{})
+	if ok {
+		return nonPointerError
+	}
+
+	_, ok = s.(*map[string]interface{})
+	if ok {
+		return nil //abort if interface is a map
+	}
+
 	strct := structs.New(s)
 	structName := strct.Name()
 

@@ -35,6 +35,16 @@ func (e *EnvironmentLoader) getPrefix(s *structs.Struct) string {
 
 // Load loads the source into the config defined by struct s
 func (e *EnvironmentLoader) Load(s interface{}) error {
+	_, ok := s.(map[string]interface{})
+	if ok {
+		return nonPointerError
+	}
+
+	_, ok = s.(*map[string]interface{})
+	if ok {
+		return nil //abort if interface is a map
+	}
+
 	strct := structs.New(s)
 	strctMap := strct.Map()
 	prefix := e.getPrefix(strct)

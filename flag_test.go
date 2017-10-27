@@ -9,6 +9,44 @@ import (
 	"github.com/fatih/structs"
 )
 
+func TestFlagLoad(t *testing.T) {
+	t.Run("flag loader should not return an error for a map source", loadFlagMapSource)
+	t.Run("flag loader should return nonPointerError for non-pointer source", testFlagNonPointerError)
+}
+
+func loadFlagMapSource(t *testing.T) {
+	l := &FlagLoader{}
+	s := map[string]interface{}{
+		"foo": "foo",
+	}
+
+	err := l.Load(&s)
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func testFlagNonPointerError(t *testing.T) {
+	l := &FlagLoader{}
+	s := map[string]interface{}{
+		"foo": "foo",
+	}
+
+	err := l.Load(s)
+	if err == nil {
+		t.Error("expected nonPointerError")
+	}
+
+	//s2 := struct {
+	//	Foo string
+	//}{"foo"}
+	//
+	//err = l.Load(s2)
+	//if err == nil {
+	//	t.Error("expected nonPointerError")
+	//}
+}
+
 func TestFlag(t *testing.T) {
 	m := &FlagLoader{}
 	s := &Server{}

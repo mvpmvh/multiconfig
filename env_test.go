@@ -8,6 +8,44 @@ import (
 	"github.com/fatih/structs"
 )
 
+func TestEnvironmentLoader_Load(t *testing.T) {
+	t.Run("environment loader should not return errors for map source", testLoadEnvMapSource)
+	t.Run("environment loader should return nonPointerError for non-pointer source", testEnvNonPointerError)
+}
+
+func testLoadEnvMapSource(t *testing.T) {
+	l := EnvironmentLoader{}
+	s := map[string]interface{}{
+		"foo": "foo",
+	}
+
+	err := l.Load(&s)
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func testEnvNonPointerError(t *testing.T) {
+	l := EnvironmentLoader{}
+	s := map[string]interface{}{
+		"foo": "foo",
+	}
+
+	err := l.Load(s)
+	if err == nil {
+		t.Error("expected nonPointerError")
+	}
+
+	//s2 := struct {
+	//	Foo string
+	//}{"foo"}
+	//
+	//err = l.Load(s2)
+	//if err == nil {
+	//	t.Error("expected nonPointerError")
+	//}
+}
+
 func TestENV(t *testing.T) {
 	m := EnvironmentLoader{}
 	s := &Server{}
