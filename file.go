@@ -10,7 +10,6 @@ import (
 
 	"github.com/BurntSushi/toml"
 	yaml "gopkg.in/yaml.v2"
-	"reflect"
 )
 
 var (
@@ -32,14 +31,15 @@ type TOMLLoader struct {
 // Defaults to using the Reader if provided, otherwise tries to read from the
 // file
 func (t *TOMLLoader) Load(s interface{}) error {
-	_, ok := s.(map[string]interface{})
-	if ok {
-		return nonPointerError
-	}
-	_, ok = s.(*map[string]interface{})
-	if ok {
-		return nil //abort if interface is a map
-	}
+	//v := reflect.ValueOf(s)
+	//switch v.Kind() {
+	//case reflect.Map:
+	//	return nonPointerError
+	//case reflect.Ptr:
+	//	if v.Elem().Kind() == reflect.Map {
+	//		return nil // abort if source is a *map[string]interface{}
+	//	}
+	//}
 
 	var r io.Reader
 
@@ -74,15 +74,15 @@ type JSONLoader struct {
 // Defaults to using the Reader if provided, otherwise tries to read from the
 // file
 func (j *JSONLoader) Load(s interface{}) error {
-	_, ok := s.(map[string]interface{})
-	if ok {
-		return nonPointerError
-	}
-
-	_, ok = s.(*map[string]interface{})
-	if ok {
-		return nil //abort if interface is a map
-	}
+	//v := reflect.ValueOf(s)
+	//switch v.Kind() {
+	//case reflect.Map:
+	//	return nonPointerError
+	//case reflect.Ptr:
+	//	if v.Elem().Kind() == reflect.Map {
+	//		return nil // abort if source is a *map[string]interface{}
+	//	}
+	//}
 
 	var r io.Reader
 	if j.Reader != nil {
@@ -112,15 +112,15 @@ type YAMLLoader struct {
 // Defaults to using the Reader if provided, otherwise tries to read from the
 // file
 func (y *YAMLLoader) Load(s interface{}) error {
-	v := reflect.ValueOf(s)
-	switch v.Kind() {
-	case reflect.Map:
-		return nonPointerError
-	case reflect.Ptr:
-		if v.Elem().Kind() == reflect.Map {
-			return nil // abort if source is a *map[string]interface{}
-		}
-	}
+	//v := reflect.ValueOf(s)
+	//switch v.Kind() {
+	//case reflect.Map:
+	//	return nonPointerError
+	//case reflect.Ptr:
+	//	if v.Elem().Kind() == reflect.Map {
+	//		return nil // abort if source is a *map[string]interface{}
+	//	}
+	//}
 
 	var r io.Reader
 

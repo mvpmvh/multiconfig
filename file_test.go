@@ -14,15 +14,13 @@ func TestFileLoad(t *testing.T) {
 
 func loadFileMapSource(t *testing.T) {
 	loaders := []Loader{
-		&JSONLoader{},
-		&TOMLLoader{},
-		&YAMLLoader{},
+		&JSONLoader{Path: "testdata/config.json"},
+		&TOMLLoader{Path: "testdata/config.toml"},
+		&YAMLLoader{Path: "testdata/config.yaml"},
 	}
 
 	for _, l := range loaders {
-		s := map[string]interface{}{
-			"foo": "foo",
-		}
+		s := make(map[string]interface{})
 
 		err := l.Load(&s)
 		if err != nil {
